@@ -2,13 +2,7 @@ const AdminSchema = require("../models/UserSchema.js");
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken");
 
-
-const registerAdmin = async (req, res) => {
-  
-};
-
-
-const loginAdmin = async (req, res) =>{
+const loginUser = async (req, res) =>{
     try {
         // take a value from user end
   const { email, password } = req.body;
@@ -57,4 +51,4 @@ const loginAdmin = async (req, res) =>{
 }
 
 
-module.exports = { registerAdmin,loginAdmin };
+module.exports = { loginUser };

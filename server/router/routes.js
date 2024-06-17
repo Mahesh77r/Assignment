@@ -1,10 +1,10 @@
 const router = require('express').Router();
-const {registerAdmin,loginAdmin} = require('../controller/AUTH')
+const {loginUser} = require('../controller/AUTH')
 const {createUser,deleteUser,getUser,updateUser} = require('../controller/CRUD')
 const auth = require("../middelwares/Auth");
 
 // Auth
-router.post('/login',loginAdmin);
+router.post('/login',loginUser);
 
 // CRUD
 router.post('/user',createUser);
