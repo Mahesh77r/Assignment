@@ -1,10 +1,10 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import bodyParser from "body-parser";
+const express = require("express") ;
+const dotenv = require("dotenv") ;
+const cors = require("cors") ;
+const bodyParser = require("body-parser") 
 
-import Router from "./router/routes.js";
-import Connection from "./config/db.js";
+const Router = require("./router/routes.js") 
+const Connection = require("./config/db.js") 
 
 const app = express();
 
@@ -13,7 +13,6 @@ dotenv.config();
 // for data crossing from front-end to backend (to cross the different server)
 app.use(cors());
 
-// squence should be maintain
 
 // node js can't understand body recevied from frontend so we use body parser
 app.use(bodyParser.json({ extended: true }));
@@ -21,12 +20,12 @@ app.use(bodyParser.json({ extended: true }));
 // if any spaces leaves in url it convert into some code so it helps to decode it
 app.use(bodyParser.urlencoded({extended:true}));
 
+require('./config/db.js').connect();
+
+
 // using different function on different route
 app.use('/',Router);
 
-const username = process.env.DB_USER;
-const password = process.env.DB_PASSWORD;
-const PORT = 9000;
 
-Connection(username,password);
-app.listen(PORT,() => {console.log(`Server running on PORT ${PORT}`)});
+
+app.listen(process.env.PORT,() => {console.log(`Server running on PORT ${process.env.PORT}`)});
