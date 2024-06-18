@@ -174,7 +174,7 @@ export const ProfilePage = () => {
                             />
                         </div>
                         {/* password */}
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label
                                 className="block text-gray-700 text-sm font-bold mb-2"
                                 htmlFor="password"
@@ -235,7 +235,7 @@ export const ProfilePage = () => {
                                     )}
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="flex gap-3">
                             {/* update */}
                             <button
