@@ -4,19 +4,35 @@ const bcrypt = require('bcrypt')
 const createUser = async (req, res) => {
     try {
         const formData = req.body;
+
+        // Check if a user with the same email or name already exists
+        const existingUser = await UserSchema.findOne({ 
+            $or: [
+                { email: formData.email }, 
+                { name: formData.name }
+            ]
+        });
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "A user with the same email or name already exists",
+            });
+        }
+
         // Hash the password
         const salt = await bcrypt.genSalt(10);
         const encryptedPassword = await bcrypt.hash(formData.password, salt);
-        // Create a new User object
-        const newUser = new UserSchema
-            ({
-                name: formData.name,
-                email: formData.email,
-                password: encryptedPassword,
-                age: formData.age
-            });
 
-        // Save the product to the database
+        // Create a new User object
+        const newUser = new UserSchema({
+            name: formData.name,
+            email: formData.email,
+            password: encryptedPassword,
+            age: formData.age
+        });
+
+        // Save the user to the database
         await newUser.save();
 
         return res.status(201).json({
@@ -25,11 +41,13 @@ const createUser = async (req, res) => {
             message: "User added successfully",
         });
     } catch (error) {
-        return res
-            .status(500)
-            .json({ success: false, error: `Error Adding User ${error}` });
+        return res.status(500).json({
+            success: false,
+            error: `Error Adding User: ${error.message}`
+        });
     }
 };
+
 
 const getUser = async (req, res) => {
     if (req.user.user_id === req.params.id) {
