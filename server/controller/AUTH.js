@@ -45,7 +45,7 @@ const loginUser = async (req, res) =>{
     } catch (error) {
         return res
         .status(500)
-        .json({ success: false, error: `Error in logging Admin ${error}` });
+        .json({ success: false, error: `Error in logging ${error}` });
     
     }
 }

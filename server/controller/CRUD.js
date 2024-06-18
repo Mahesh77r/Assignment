@@ -14,7 +14,7 @@ const createUser = async (req, res) => {
         });
 
         if (existingUser) {
-            return res.status(400).json({
+            return res.status(202).json({
                 success: false,
                 message: "A user with the same email or name already exists",
             });
@@ -35,7 +35,7 @@ const createUser = async (req, res) => {
         // Save the user to the database
         await newUser.save();
 
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             data: newUser,
             message: "User added successfully",
@@ -47,7 +47,6 @@ const createUser = async (req, res) => {
         });
     }
 };
-
 
 const getUser = async (req, res) => {
     if (req.user.user_id === req.params.id) {
@@ -68,7 +67,7 @@ const getUser = async (req, res) => {
         } catch (error) {
             return res.status(500).json({
                 success: false,
-                error: `Error Deleting user profile: ${error.message}`
+                error: `Error fetching user profile: ${error.message}`
             });
         }
     }

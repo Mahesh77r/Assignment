@@ -4,8 +4,6 @@ const cors = require("cors") ;
 const bodyParser = require("body-parser") 
 
 const Router = require("./router/routes.js") 
-const Connection = require("./config/db.js") 
-
 const app = express();
 
 // initiliazed env file
@@ -21,7 +19,6 @@ app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({extended:true}));
 
 require('./config/db.js').connect();
-
 
 // using different function on different route
 app.use('/',Router);
