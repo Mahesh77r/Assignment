@@ -5,11 +5,10 @@ const config = process.env;
 const verifyToken = (req, res, next) => {
   // Extract the token from the request headers
   const token = req.headers.authorization;
-
   // Check if a token exists
   if (!token) {
     // If no token is provided, send a 403 Forbidden status and an error message
-    res.status(403).send("A token is required for authentication");
+    res.status(403).send(`A token is required for authentication ${req}`);
     return;
   }
 

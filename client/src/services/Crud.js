@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const URL = 'https://assignment-ed6x.onrender.com';
-// const LOCALURL = 'http://localhost:8080';
+// const URL = 'https://assignment-ed6x.onrender.com';
+const LOCALURL = 'http://localhost:9000';
 
 
 const token = localStorage.getItem('jwtToken');
@@ -9,7 +9,7 @@ const token = localStorage.getItem('jwtToken');
 export const fetchUser = async (id) => {
   id = id || '';
   try {
-    return await axios.get(`${URL}/user/${id}`,{
+    return await axios.get(`${LOCALURL}/user/${id}`,{
       headers: {
           'Authorization': `${token}`
       }
@@ -24,7 +24,7 @@ export const createUser = async (formdata) => {
   try {
     console.log(formdata)
 
-    return await axios.post(`${URL}/user`, formdata,{
+    return await axios.post(`${LOCALURL}/user`, formdata,{
       headers: {
           'Authorization': `${token}`
       }
@@ -40,7 +40,7 @@ export const updateUser = async (id, formdata) => {
   id = id || '';
 
   try {
-    return await axios.patch(`${URL}/user/${id}`, formdata,{
+    return await axios.patch(`${LOCALURL}/user/${id}`, formdata,{
       headers: {
           'Authorization': `${token}`
       }
@@ -56,7 +56,7 @@ export const deleteUser = async (id) => {
   id = id || '';
 
   try {
-    return await axios.delete(`${URL}/user/${id}`,{
+    return await axios.delete(`${LOCALURL}/user/${id}`,{
       headers: {
           'Authorization': `${token}`
       }

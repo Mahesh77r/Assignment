@@ -35,12 +35,14 @@ const [loginData, setLoginData] = useState({
 
         localStorage.setItem("jwtToken", token);
         toast.success("Login Successfully");
-        setTimeout(() => {
+        
             window.location.href = `/profile/${res.data.user._id}`;
-          }, 300);
+    
     }
     else{
         console.log("first")
+      toast.error('Email or Password is Wrong');
+
     }
    } catch (error) {
     console.error('Error during login:', error);
@@ -77,9 +79,9 @@ const [loginData, setLoginData] = useState({
             let res = await createUser(registerData);
             if (res.status === 200) {
                 toast.success("Register Successfully");
-                setTimeout(() => {
-                  window.location.href = `/profile/${res.data.user._id}`;
-                }, 300);
+                console.log(res)
+                  window.location.href = `/profile/${res.data.data._id}`;
+                
             } else if(res.status === 202) {
                 toast.error(res.data.message);
             }
@@ -89,6 +91,7 @@ const [loginData, setLoginData] = useState({
         }
         
        finally{
+        console.log("dis")
         toast.dismiss(loadingToast);
        }
       };

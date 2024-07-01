@@ -1,6 +1,7 @@
 const AdminSchema = require("../models/UserSchema.js");
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
 
 const loginUser = async (req, res) =>{
     try {
@@ -24,7 +25,7 @@ const loginUser = async (req, res) =>{
       },
       process.env.TOKEN_KEY
     );
-
+    
     // save user token
     userExist.token = token;
 
@@ -50,5 +51,60 @@ const loginUser = async (req, res) =>{
     }
 }
 
+const generateToken = async (req,res) => {
+  if (req.user.user_id === req.params.id) {
 
-module.exports = { loginUser };
+  try {
+    const _id  = req.user.user_id;
+    const user = await AdminSchema.findOne({ _id:_id });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.resetToken = resetToken;
+    user.resetTokenExpiration = Date.now() + 3600000;
+    await user.save();
+    // console.log(user)
+    res.status(200).json({ success: true, token: resetToken });
+
+  } catch (error) {
+    res.status(500).json({ error: `Failed to Generate Token ${error}` });
+  }
+}
+else{
+  return res.status(401).json({
+    success: false,
+    error: `The token doesn't match.`
+});
+}
+}
+const resetPassword = async (req, res) => {
+  try {
+    const token = req.params.token;
+    const password = req.body.pass;
+    const user = await AdminSchema.findOne({
+      resetToken: token,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired reset token' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
+
+    await user.save();
+    res.json({ success: true ,msg:"Reset Successfully"});
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reset password' });
+  }
+}
+
+;
+
+module.exports = { loginUser, resetPassword, generateToken };

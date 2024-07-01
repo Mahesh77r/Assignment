@@ -3,10 +3,12 @@ const dotenv = require("dotenv") ;
 const cors = require("cors") ;
 const bodyParser = require("body-parser") 
 
-const Router = require("./router/routes.js") 
 const app = express();
 
+const Router = require("./router/routes.js") 
 // initiliazed env file
+
+
 dotenv.config();
 // for data crossing from front-end to backend (to cross the different server)
 app.use(cors());
@@ -23,6 +25,6 @@ require('./config/db.js').connect();
 // using different function on different route
 app.use('/',Router);
 
-
+app.use
 
 app.listen(process.env.PORT,() => {console.log(`Server running on PORT ${process.env.PORT}`)});
