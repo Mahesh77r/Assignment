@@ -10,7 +10,6 @@ export const ProfilePage = () => {
     const [registerData, setRegisterData] = useState({
         name: "",
         email: "",
-        password: "",
         age: ""
     });
     // fetch
@@ -27,15 +26,10 @@ export const ProfilePage = () => {
             age: resData.age,
             email: resData.email,
             name: resData.name,
-            password: resData.password
         });
     };
 
     // update
-    const [showRPassword, setShowRPassword] = useState(false);
-    const toggleRPasswordVisibility = () => {
-        setShowRPassword(!showRPassword);
-    };
     const handleRInputChange = (event) => {
         const { name, value } = event.target;
         setRegisterData({

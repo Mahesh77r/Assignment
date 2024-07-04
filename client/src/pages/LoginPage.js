@@ -1,13 +1,14 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Toaster, toast } from 'react-hot-toast';
 import { login } from "../services/Auth";
-import { createUser } from '../services/Crud'
+import { createUserNew, loginUserNew } from "../services/CustomAPI";
+import Cookie from 'js-cookie'
 
 export default function LoginPage() {
 
-    // Login
-const [loginData, setLoginData] = useState({
+  // Login
+  const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
@@ -26,86 +27,101 @@ const [loginData, setLoginData] = useState({
     e.preventDefault();
     const loadingToast = toast.loading("Processing...");
 
-   try {
-    const res = await login(loginData);
-    if(res.status===200){
+    try {
+      // const res = await login(loginData);
+      const headers ={};
+      const res = await loginUserNew(loginData, headers)
+      if (res.status === 200) {
         console.log(res);
         let token = JSON.stringify(res.data.user.token);
         token = JSON.parse(token);
 
         localStorage.setItem("jwtToken", token);
+        Cookie.set('cookie',token,{
+          expires: 1 //in days
+        })
         toast.success("Login Successfully");
-        
-            window.location.href = `/profile/${res.data.user._id}`;
-    
-    }
-    else{
-        console.log("first")
-      toast.error('Email or Password is Wrong');
 
-    }
-   } catch (error) {
-    console.error('Error during login:', error);
+        window.location.href = `/profile/${res.data.user._id}`;
+
+      }
+      else {
+        console.log("first")
+        toast.error('Email or Password is Wrong');
+
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
       toast.error('An error occurred during login');
-   }
-   finally{
-    toast.dismiss(loadingToast);
-   }
+    }
+    finally {
+      toast.dismiss(loadingToast);
+    }
   };
 
-// Register
-    const [registerData, setRegisterData] = useState({
-    name:"",
+  // useEffect(()=>{
+  //   if(!localStorage.getItem('jwtToken')){
+  //       window.location.assign('/')
+  // }
+  // },[])
+
+
+  // Register
+  const [registerData, setRegisterData] = useState({
+    name: "",
     email: "",
     password: "",
-    age:""
+    age: ""
   });
-    const [showRPassword, setShowRPassword] = useState(false);
-    const toggleRPasswordVisibility = () => {
-        setShowRPassword(!showRPassword);
-      };
-      const handleRInputChange = (event) => {
-        const { name, value } = event.target;
-        setRegisterData({
-          ...registerData,
-          [name]: value,
-        });
-      };
-      const registerHandler = async (e) => {
-        e.preventDefault();
-        const loadingToast = toast.loading("Processing...");
-    
-        try {
-            let res = await createUser(registerData);
-            if (res.status === 200) {
-                toast.success("Register Successfully");
-                console.log(res)
-                  window.location.href = `/profile/${res.data.data._id}`;
-                
-            } else if(res.status === 202) {
-                toast.error(res.data.message);
-            }
-        } catch (error) {
-            console.error('Error during Register:', error);
-            toast.error('An error occurred during Register');
-        }
-        
-       finally{
-        console.log("dis")
-        toast.dismiss(loadingToast);
-       }
-      };
+  const [showRPassword, setShowRPassword] = useState(false);
+  const toggleRPasswordVisibility = () => {
+    setShowRPassword(!showRPassword);
+  };
+  const handleRInputChange = (event) => {
+    const { name, value } = event.target;
+    setRegisterData({
+      ...registerData,
+      [name]: value,
+    });
+  };
+  const registerHandler = async (e) => {
+    e.preventDefault();
+    const loadingToast = toast.loading("Processing...");
+
+    try {
+      // let res = await createUser(registerData);
+      const headers ={}
+      let res = await createUserNew(registerData,headers);
+      console.log(res)
+      if (res.status === 200) {
+        toast.success("Register Successfully");
+        console.log(res)
+        window.location.href = `/profile/${res.data.data._id}`;
+
+      } else if (res.status === 202) {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.error('Error during Register:', error);
+      toast.error('An error occurred during Register');
+    }
+
+    finally {
+      console.log("dis")
+      toast.dismiss(loadingToast);
+    }
+  };
   return (
     <>
       <Toaster position="top-center" />
 
       <div className="flex h-screen bg-orange-100 gap-6 p-3 overflow-y-hidden">
         {/* Register */}
-      <div className="m-auto p-6 bg-white rounded-lg shadow-lg w-96">
+        <div className="m-auto p-6 bg-white rounded-lg shadow-lg w-96">
           <h2 className="text-2xl text-center font-semibold mb-4">Sign Up</h2>
           <form onSubmit={(e) => registerHandler(e)}>
             {/* Name */}
-          <div className="mb-4">
+            <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="name"
@@ -133,7 +149,7 @@ const [loginData, setLoginData] = useState({
               </label>
               <input
                 type="email"
-                id="email"
+                id="emailR"
                 name="email"
                 className="w-full px-3 py-2 border rounded-lg"
                 placeholder="Your email"
@@ -172,7 +188,7 @@ const [loginData, setLoginData] = useState({
               <div className="relative">
                 <input
                   type={showRPassword ? "text" : "password"}
-                  id="password"
+                  id="passwordR"
                   name="password"
                   className="w-full px-3 py-2 border rounded-lg"
                   placeholder="Your password"
@@ -185,7 +201,7 @@ const [loginData, setLoginData] = useState({
                   className="absolute right-2 top-2"
                   onClick={toggleRPasswordVisibility}
                 >
-                   {showRPassword ? (
+                  {showRPassword ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -224,7 +240,7 @@ const [loginData, setLoginData] = useState({
                 </button>
               </div>
             </div>
-            
+
             <button
               type="submit"
               className="w-full bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg"
@@ -278,7 +294,7 @@ const [loginData, setLoginData] = useState({
                   className="absolute right-2 top-2"
                   onClick={togglePasswordVisibility}
                 >
-                   {showPassword ? (
+                  {showPassword ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -317,7 +333,7 @@ const [loginData, setLoginData] = useState({
                 </button>
               </div>
             </div>
-            
+
             <button
               type="submit"
               className="w-full bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg"

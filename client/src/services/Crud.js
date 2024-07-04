@@ -11,7 +11,7 @@ export const fetchUser = async (id) => {
   try {
     return await axios.get(`${LOCALURL}/user/${id}`,{
       headers: {
-          'Authorization': `${token}`
+          'Authorization': token
       }
   });
   }
