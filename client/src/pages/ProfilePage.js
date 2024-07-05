@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Toaster, toast } from 'react-hot-toast';
-import { deleteUser, fetchUser, updateUser } from '../services/Crud'
+// import { deleteUser, fetchUser, updateUser } from '../services/Crud'
+import { fetchUserData, updateUserData, deleteUser } from '../services/CustomAPI'
 import { generateToken } from "../services/Auth";
 
 
@@ -15,11 +16,13 @@ export const ProfilePage = () => {
     // fetch
     useEffect(() => {
         getData();
-    }, []);
+    }, [setRegisterData]);
     const { id } = useParams();
 
     const getData = async () => {
-        let res = await fetchUser(id);
+        const header ={};
+        const param = {id};
+        let res = await fetchUserData(header,param);
         console.log(res)
         let resData = res.data.data
         setRegisterData({
@@ -42,12 +45,12 @@ export const ProfilePage = () => {
         const loadingToast = toast.loading("Processing...");
 
         try {
-            let res = await updateUser(id, registerData);
+            const header ={};
+            const param = {id};
+            let res = await updateUserData(registerData,header,param);
             if (res.status === 200) {
                 toast.success("Updation Successfully");
-                setTimeout(() => {
-                    window.location.href = `/profile/${res.data.data._id}`;
-                }, 300);
+                
             } else if (res.status === 202) {
                 toast.error(res.data.message);
             }
@@ -67,9 +70,11 @@ export const ProfilePage = () => {
         const loadingToast = toast.loading("Processing...");
 
         try {
-            let res = await deleteUser(id);
+            const header ={};
+            const param = {id};
+            let res = await deleteUser(header,param);
             if (res.status === 200) {
-                // toast.success(`Deletion Successfully of ${res.data.data.name}`);
+                toast.success(`Deletion Successfully of ${res.data.data.name}`);
                 setTimeout(() => {
                     window.location.href = `/`;
                 }, 300);

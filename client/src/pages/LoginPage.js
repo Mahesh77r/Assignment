@@ -1,7 +1,5 @@
-
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Toaster, toast } from 'react-hot-toast';
-import { login } from "../services/Auth";
 import { createUserNew, loginUserNew } from "../services/CustomAPI";
 import Cookie from 'js-cookie'
 
@@ -96,7 +94,8 @@ export default function LoginPage() {
       if (res.status === 200) {
         toast.success("Register Successfully");
         console.log(res)
-        window.location.href = `/profile/${res.data.data._id}`;
+        toast.info("Please Login")
+        // window.location.href = `/`;
 
       } else if (res.status === 202) {
         toast.error(res.data.message);
